@@ -11,6 +11,8 @@ builder.Services.RegisterDbDependencies(new TodoDbOptions()
 {
     DB_NAME = "TODO_DB"
 });
+
+// Use Gzip compression
 builder.Services.Configure<GzipCompressionProviderOptions>
     (options => options.Level = CompressionLevel.Optimal);
 builder.Services.AddResponseCompression(options =>
