@@ -3,20 +3,16 @@
 # Creating a base layer
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
 
 # dotnet build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY . .
-RUN dotnet build "./Todo.WebAPI/Todo.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./Todo.WebAPI/Todo.WebAPI.csproj" -c Release -o /app/build
 
 # dotnet publish
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Todo.WebAPI/Todo.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish
+RUN dotnet publish "./Todo.WebAPI/Todo.WebAPI.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
