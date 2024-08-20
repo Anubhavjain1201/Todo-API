@@ -5,7 +5,7 @@ using Todo.Models;
 
 namespace Todo.WebAPI.Controllers
 {
-    [Route("api/todoitems")]
+    [Route("todo")]
     [ApiController]
     public class TodoAPIController : ControllerBase
     {
@@ -77,6 +77,12 @@ namespace Todo.WebAPI.Controllers
             await _dbContext.SaveChangesAsync();
 
             _logger.LogInformation("Todo Item deleted");
+            return Ok();
+        }
+
+        [HttpGet("health")]
+        public IActionResult HealthCheck()
+        {
             return Ok();
         }
     }
