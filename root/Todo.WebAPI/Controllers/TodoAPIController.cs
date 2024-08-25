@@ -83,6 +83,7 @@ namespace Todo.WebAPI.Controllers
         [HttpGet("health")]
         public IActionResult HealthCheck()
         {
+            _logger.LogInformation("Health Check");
             return Ok();
         }
     }
