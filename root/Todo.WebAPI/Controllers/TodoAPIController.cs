@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Todo.DAL;
-using Todo.Models;
+using Todo.Models.DomainModels;
+using Todo.Services;
 
 namespace Todo.WebAPI.Controllers
 {
@@ -9,12 +8,12 @@ namespace Todo.WebAPI.Controllers
     [ApiController]
     public class TodoAPIController : ControllerBase
     {
-        private readonly TodoDbContext _dbContext;
+        private readonly ITodoService _todoService;
         private readonly ILogger<TodoAPIController> _logger;
 
-        public TodoAPIController(TodoDbContext context, ILogger<TodoAPIController> logger)
+        public TodoAPIController(ITodoService todoService, ILogger<TodoAPIController> logger)
         {
-            _dbContext = context;
+            _todoService = todoService;
             _logger = logger;
         }
 
@@ -22,19 +21,17 @@ namespace Todo.WebAPI.Controllers
         public async Task<IActionResult> GetAllItems()
         {
             _logger.LogInformation("Fetching all Todo Items");
-            dynamic result = await _dbContext.Todos.ToListAsync();
-
+            dynamic result = await _todoService.GetAllTodoItems();
             _logger.LogInformation("Fetched all Todo Items");
+            
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetItem(int id)
+        public async Task<IActionResult> GetItem(Guid id)
         {
             _logger.LogInformation($"Fetching the Todo Item with Id: {id}");
-
-            var item = await _dbContext.Todos.FindAsync(id);
-
+            var item = await _todoService.GetTodoItem(id);
             _logger.LogInformation($"Fetched Todo Item");
 
             return item == null ? NotFound() : Ok(item);
@@ -44,11 +41,9 @@ namespace Todo.WebAPI.Controllers
         public async Task<IActionResult> InsertItem([FromBody] TodoModel todoItem)
         {
             _logger.LogInformation("Adding the Todo Item");
-
-            _dbContext.Todos.Add(todoItem);
-            await _dbContext.SaveChangesAsync();
-
+            await _todoService.InsertTodoItem(todoItem);
             _logger.LogInformation("Todo Item added");
+            
             return Ok();
         }
 
@@ -56,27 +51,19 @@ namespace Todo.WebAPI.Controllers
         public async Task<IActionResult> UpdateItem([FromBody] TodoModel todoItem)
         {
             _logger.LogInformation("Updating the Todo Item");
-
-            _dbContext.Entry(todoItem).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-
+            await _todoService.UpdateTodoItem(todoItem);
             _logger.LogInformation("Todo Item updated");
+            
             return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItem(int id)
+        public async Task<IActionResult> DeleteItem(Guid id)
         {
-            _logger.LogInformation($"Finding Todo Item with Id: {id}");
-            var todoItem = await _dbContext.Todos.FindAsync(id);
-            if (todoItem == null) return NotFound();
-
-            _logger.LogInformation("Todo Item exists...Proceeding to delete");
-
-            _dbContext.Todos.Remove(todoItem);
-            await _dbContext.SaveChangesAsync();
-
+            _logger.LogInformation("Deleting the Todo Item");
+            await _todoService.DeleteTodoItem(id);
             _logger.LogInformation("Todo Item deleted");
+            
             return Ok();
         }
 
