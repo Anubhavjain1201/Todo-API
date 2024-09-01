@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Todo.DAL\Todo.DAL.csproj" />
+    <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
   </ItemGroup>
 
 </Project>

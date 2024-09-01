@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using Todo.DAL;
+using Todo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.RegisterDbDependencies(new TodoDbOptions()
-{
-    DB_NAME = "TODO_DB"
-});
+builder.Services.RegisterDbDependencies();
+builder.Services.RegisterRepositories();
+builder.Services.RegisterTodoServices();
 
 // Use Gzip compression
 builder.Services.Configure<GzipCompressionProviderOptions>
