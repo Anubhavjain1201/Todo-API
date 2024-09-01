@@ -1,16 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Amazon.DynamoDBv2;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Todo.DAL
 {
     public static class TodoDbExtensions
     {
-        public static IServiceCollection RegisterDbDependencies (this IServiceCollection services, TodoDbOptions dbOptions)
+        public static IServiceCollection RegisterDbDependencies(this IServiceCollection services)
         {
-            services.AddDbContext<TodoDbContext>(options =>
-            {
-                options.UseInMemoryDatabase(dbOptions.DB_NAME);
-            });
+            services.AddSingleton<IAmazonDynamoDB, AmazonDynamoDBClient>();
             return services;
         }
     }
