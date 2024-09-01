@@ -2,7 +2,7 @@
 A Simple Todo API that lets you manage your daily Todo tasks.<br>
 
 <h3>Tech Stack</h3>
-It is written in .NET 8 and utilizes InMemoryDB (EntityFrameworkCore.InMemory)<br>
+It is written in .NET 8 and utilizes AWS DynamoDB<br>
 
 <h3>APIs</h3>
   <ol>
